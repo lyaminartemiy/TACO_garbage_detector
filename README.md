@@ -1,4 +1,4 @@
-# Garbage Detector (Project for Deep Learning School)
+# Garbage Detector (Project for [Deep Learning School](https://dls.samcs.ru))
 
 ### Brief description of the project
 > Development of an automatic garbage detector on images.
