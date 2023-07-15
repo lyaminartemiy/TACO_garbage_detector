@@ -1,7 +1,10 @@
+from PIL import Image
+import torch
+import torchvision.transforms as T
+
+
 def transform_image_with_bbox(image: Image, bboxes: list, desired_size: tuple, transform: T, size: tuple):
     resized_image = torch.FloatTensor(transform(image))
-
-    width, height = size[0], size[1]
     resized_bboxes = []
 
     for bbx in bboxes:
