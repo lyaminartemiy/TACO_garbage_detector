@@ -6,6 +6,7 @@ from pycocotools.coco import COCO
 from matplotlib import pyplot as plt
 from matplotlib.patches import Polygon, Rectangle
 from matplotlib.collections import PatchCollection
+from src.config.config import config
 
 
 def show_images_with_detection(coco: COCO, images: list, number_of_batch: int, ids: list):
@@ -32,7 +33,7 @@ def show_images_with_detection(coco: COCO, images: list, number_of_batch: int, i
             print(f"{image_filepath}: Incorrect file")
         else:
             print(image_filepath)
-            I = Image.open(DATASET_PATH + '/' + image_filepath)
+            I = Image.open(config['DATASET_PATH'] + '/' + image_filepath)
 
             fig, ax = plt.subplots(1)
             plt.axis("off")
@@ -45,17 +46,15 @@ def show_images_with_detection(coco: COCO, images: list, number_of_batch: int, i
                 color = colorsys.hsv_to_rgb(np.random.random(), 1, 1)
                 for seg in ann['segmentation']:
                     poly = Polygon(np.array(seg).reshape((int(len(seg) / 2)), 2))
-                    p = PatchCollection([poly], facecolor=color, edgecolors=color,
-                                        linewidth=0, alpha=0.4)
+                    p = PatchCollection([poly], facecolor=color, edgecolors=color, linewidth=0, alpha=0.4)
                     ax.add_collection(p)
-                    p = PatchCollection([poly], facecolor='none',
-                                        edgecolors=color, linewidth=2)
+                    p = PatchCollection([poly], facecolor='none', edgecolors=color, linewidth=2)
                     ax.add_collection(p)
 
                 [x, y, w, z] = ann['bbox']
                 print("bbox coordinates:", *[x, y, w, z])
-                rect = Rectangle((x, y), w, z, linewidth=2, edgecolor=color,
-                                 facecolor='none', alpha=0.7, linestyle='--')
+                rect = Rectangle((x, y), w, z, linewidth=2, edgecolor=color, facecolor='none',
+                                 alpha=0.7, linestyle='--')
                 ax.add_patch(rect)
 
         plt.show();
