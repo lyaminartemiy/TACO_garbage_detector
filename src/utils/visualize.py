@@ -1,10 +1,20 @@
-def show_images_with_detection(number_of_batch: int, ids: list):
+import pylab
+import colorsys
+import numpy as np
+from PIL import Image, ExifTags
+from pycocotools.coco import COCO
+from matplotlib import pyplot as plt
+from matplotlib.patches import Polygon, Rectangle
+from matplotlib.collections import PatchCollection
+
+
+def show_images_with_detection(coco: COCO, images: list, number_of_batch: int, ids: list):
     """
         
     """
     for n_image in range(len(ids)):
         image_filepath = f'batch_{number_of_batch}/{ids[n_image]}.jpg'
-        pylab.rcParams['figure.figsize'] = (28,28)
+        pylab.rcParams['figure.figsize'] = (28, 28)
 
         # Obtain Exif orientation tag code
         for orientation in ExifTags.TAGS.keys():
@@ -13,7 +23,7 @@ def show_images_with_detection(number_of_batch: int, ids: list):
 
         # Find image id
         img_id = -1
-        for img in imgs:
+        for img in images:
             if img['file_name'] == image_filepath:
                 img_id = img['id']
                 break
@@ -34,7 +44,7 @@ def show_images_with_detection(number_of_batch: int, ids: list):
             for ann in anns_sel:
                 color = colorsys.hsv_to_rgb(np.random.random(), 1, 1)
                 for seg in ann['segmentation']:
-                    poly = Polygon(np.array(seg).reshape((int(len(seg)/2)), 2))
+                    poly = Polygon(np.array(seg).reshape((int(len(seg) / 2)), 2))
                     p = PatchCollection([poly], facecolor=color, edgecolors=color,
                                         linewidth=0, alpha=0.4)
                     ax.add_collection(p)
