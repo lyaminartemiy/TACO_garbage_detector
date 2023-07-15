@@ -1,6 +1,7 @@
 from PIL import Image
 import torch
 import torchvision.transforms as T
+from src.config.config import config
 
 
 def transform_image_with_bbox(image: Image, bboxes: list, desired_size: tuple, transform: T, size: tuple):
@@ -32,7 +33,7 @@ def parse_bboxes_and_categories(id_image: int, anns: list):
 
 
 def get_id_of_category(id_name: int):
-    for index, label in enumerate(LABELS):
-        if id_name in LABELS[label]:
+    for index, label in enumerate(config['LABELS']):
+        if id_name in config['LABELS'][label]:
             return index + 1
     return -1
