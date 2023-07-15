@@ -1,10 +1,19 @@
-class TACODataset(torch.utils.data.Dataset):
+import os
+from torch.utils.data import Dataset
+from src.utils.ann_transform import *
+from src.config.config import config
+
+
+def collate_fn(batch):
+    return tuple(zip(*batch))
+
+
+class TACODataset(Dataset):
     """
         Class for TACO Dataset.
     """
 
-    def __init__(self, coco_object: COCO, imgs: list, categories: list, anns: list,
-                 dataset_path: str, transform=f'T.Resize((224, 224))'):
+    def __init__(self, imgs: list, categories: list, anns: list, dataset_path: str, transform=f'T.Resize((224, 224))'):
         self.imgs = imgs
         self.categories = categories
         self.anns = anns
@@ -20,27 +29,13 @@ class TACODataset(torch.utils.data.Dataset):
         image = Image.open(image_path).convert('RGB')
 
         bboxes_array, categories = parse_bboxes_and_categories(id_image, self.anns)
-        resized_image, resized_bboxes = transform_image_with_bbox(image, bboxes_array, DESIRED_SIZE,
+        resized_image, resized_bboxes = transform_image_with_bbox(image, bboxes_array, config['DESIRED_SIZE'],
                                                                   self.transform, (width, height))
-        labels =  [get_id_of_category(cat) for cat in categories]
+        labels = [get_id_of_category(cat) for cat in categories]
         categories = torch.tensor(labels, dtype=torch.int64)
 
-        image_id = torch.tensor([id_image])
-        area = (resized_bboxes[:, 3] - resized_bboxes[:, 1]) * (resized_bboxes[:, 2] - resized_bboxes[:, 0])
-        iscrowd = torch.zeros((len(bboxes_array),), dtype=torch.int64)
-
-        target = {}
-        target["boxes"] = resized_bboxes
-        target["labels"] = categories
-        # target["image_id"] = image_id
-        # target["area"] = area
-        # target["iscrowd"] = iscrowd
-
+        target = {"boxes": resized_bboxes, "labels": categories}
         return resized_image, target
 
     def __len__(self):
-        return len(imgs)
-
-    def collate_fn(self, batch):
-        return tuple(zip(*batch))
-
+        return len(self.imgs)
