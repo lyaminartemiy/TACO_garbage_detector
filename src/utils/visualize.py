@@ -11,13 +11,21 @@ from src.config.config import config
 
 def show_images_with_detection(coco: COCO, images: list, number_of_batch: int, ids: list):
     """
-    Function for visualizing images with all objects and their bounding boxes.
+    Show images with object detection annotations.
 
-    Arguments:
-        coco (COCO): coco object of the entire dataset
-        images (list): images from dataset
-        number_of_batch (int): butch's number in the dataset
-        ids (list): indexes of images in the batch
+    This function displays images with their associated object detection annotations. It takes a COCO object,
+    a list of images, the batch number, and a list of image IDs as input.
+
+    Parameters:
+    -----------
+    coco (COCO): The COCO object containing dataset annotations.
+    images (list): A list of image data containing information about image files and IDs.
+    number_of_batch (int): The batch number of the images to be displayed.
+    ids (list): A list of image IDs for which to show the annotations.
+
+    Returns:
+    --------
+    None: The function displays the images with annotations using Matplotlib.
     """
     for n_image in range(len(ids)):
         image_filepath = f'batch_{number_of_batch}/{ids[n_image]}.jpg'
