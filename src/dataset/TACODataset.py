@@ -28,13 +28,13 @@ class TACODataset(Dataset):
         image_path = os.path.join(self.dataset_path, file_name)
         image = Image.open(image_path).convert('RGB')
 
-        bboxes_array, categories = parse_bboxes_and_categories(id_image, self.anns)
+        bboxes_array, labels = parse_bboxes_and_categories(id_image, self.anns)
         resized_image, resized_bboxes = transform_image_with_bbox(image, bboxes_array, config['DESIRED_SIZE'],
                                                                   self.transform, (width, height))
-        labels = [get_id_of_category(cat) for cat in categories]
-        categories = torch.tensor(labels, dtype=torch.int64)
+        labels = [get_id_of_category(cat) for cat in labels]
+        labels = torch.tensor(labels, dtype=torch.int64)
 
-        target = {"boxes": resized_bboxes, "labels": categories}
+        target = {"boxes": resized_bboxes, "labels": labels}
         return resized_image, target
 
     def __len__(self):
