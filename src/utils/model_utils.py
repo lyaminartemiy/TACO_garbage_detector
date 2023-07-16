@@ -6,7 +6,18 @@ from src.config.config import config
 
 def get_model(num_classes):
     """
+    Get a custom Faster R-CNN model.
 
+    This function returns a custom Faster R-CNN model based on the ResNet-50 FPN architecture,
+    with the final classifier replaced to support the specified number of classes.
+
+    Parameters:
+    -----------
+    num_classes (int): The number of classes (including background) for the model's classifier.
+
+    Returns:
+    --------
+    torch.nn.Module: A custom Faster R-CNN model with the specified number of classes.
     """
     model = fasterrcnn_resnet50_fpn(pretrained=True)
     in_features = model.roi_heads.box_predictor.cls_score.in_features
@@ -16,7 +27,20 @@ def get_model(num_classes):
 
 def train_batch(batch, model, optim):
     """
+    Perform a single training iteration on a batch.
 
+    This function performs a forward pass on the model and computes the loss for the given batch of data.
+    It then backpropagates the gradients and updates the model's parameters using the specified optimizer.
+
+    Parameters:
+    -----------
+    batch (tuple): A tuple containing the input images and target dictionaries for the batch.
+    model (torch.nn.Module): The Faster R-CNN model to be trained.
+    optim (torch.optim.Optimizer): The optimizer to be used for training.
+
+    Returns:
+    --------
+    tuple: A tuple containing the total loss and a dictionary of individual loss components.
     """
     model.train()
 
@@ -38,7 +62,19 @@ def train_batch(batch, model, optim):
 @torch.no_grad()
 def validate_batch(batch, model):
     """
+    Perform a single validation iteration on a batch.
 
+    This function performs a forward pass on the model and computes the loss for the given batch of data.
+    However, it does not backpropagate gradients or update the model's parameters since it is used for validation.
+
+    Parameters:
+    -----------
+    batch (tuple): A tuple containing the input images and target dictionaries for the batch.
+    model (torch.nn.Module): The Faster R-CNN model to be validated.
+
+    Returns:
+    --------
+    tuple: A tuple containing the total loss and a dictionary of individual loss components.
     """
     model.eval()
 
