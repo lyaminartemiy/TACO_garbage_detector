@@ -3,6 +3,7 @@ import json
 
 DATASET_PATH = '/content/gdrive/MyDrive/dls_project'
 ANNS_FILE_PATH = DATASET_PATH + '/' + 'annotations.json'
+DESIRED_SIZE = (512, 512)
 
 with open(ANNS_FILE_PATH, 'r') as f:
     dataset = json.loads(f.read())
@@ -18,5 +19,6 @@ for cat in categories:
 config = dict(
     DATASET_PATH=DATASET_PATH,
     ANNS_FILE_PATH=ANNS_FILE_PATH,
-    LABELS=LABELS
+    LABELS=LABELS,
+    DESIRED_SIZE=DESIRED_SIZE
 )
