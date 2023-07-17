@@ -60,7 +60,7 @@ def train_batch(batch, model, optim):
 
 
 @torch.no_grad()
-def validate_batch(batch, model):
+def validate_batch(batch, model, optim):
     """
     Perform a single validation iteration on a batch.
 
@@ -76,13 +76,15 @@ def validate_batch(batch, model):
     --------
     tuple: A tuple containing the total loss and a dictionary of individual loss components.
     """
-    model.eval()
+    model.train()
 
     imgs, targets = batch
     imgs = list(img.to(config['DEVICE']) for img in imgs)
     targets = [{k: v.to(config['DEVICE']) for k, v in t.items()} for t in targets]
 
+    optim.zero_grad()
+
     losses = model(imgs, targets)
-    loss = sum(loss for loss in losses)
+    loss = sum(loss for loss in losses.values())
 
     return loss, losses
