@@ -1,5 +1,6 @@
 from src.config.config import config
 from src.utils.model_utils import get_model, train_batch, validate_batch
+from src.config.config import config
 from tqdm import tqdm
 
 
@@ -14,16 +15,11 @@ class CustomFasterRCNN:
     model (torch.nn.Module): The Faster R-CNN model.
     device: The device (CPU or GPU) on which the model is loaded.
     """
-    def __init__(self, device):
+    def __init__(self):
         """
         Initialize the CustomFasterRCNN object.
-
-        Parameters:
-        -----------
-        device: The device (CPU or GPU) to load the model on.
         """
-        self.model = get_model(len(config['LABELS']) + 1).to(device)
-        self.device = device
+        self.model = get_model(len(config['LABELS']) + 1).to(config['DEVICE'])
 
     def train(self, train_dataloader, optim, n_epochs, valid_dataloader=None):
         """
@@ -64,7 +60,7 @@ class CustomFasterRCNN:
             # Training phase
             tqdm_train_dataloader = tqdm(train_dataloader, desc=f"Epoch {epoch + 1}/{n_epochs}, Training")
             for i, batch in enumerate(tqdm_train_dataloader):
-                loss, losses = train_batch(batch, self.model.float(), optim)
+                loss, losses = train_batch(batch, self.model, optim)
                 loc_loss, regr_loss, loss_objectness, loss_rpn_box_reg = [losses[k] for k in
                                                                           ['loss_classifier', 'loss_box_reg',
                                                                            'loss_objectness', 'loss_rpn_box_reg']]
@@ -83,7 +79,7 @@ class CustomFasterRCNN:
             if valid_dataloader is not None:
                 tqdm_valid_dataloader = tqdm(valid_dataloader, desc=f"Epoch {epoch + 1}/{n_epochs}, Validation")
                 for i, batch in enumerate(tqdm_valid_dataloader):
-                    loss, losses = validate_batch(batch, self.model.float())
+                    loss, losses = validate_batch(batch, self.model)
                     loc_loss, regr_loss, loss_objectness, loss_rpn_box_reg = [losses[k] for k in
                                                                               ['loss_classifier', 'loss_box_reg',
                                                                                'loss_objectness', 'loss_rpn_box_reg']]
