@@ -95,3 +95,12 @@ class CustomFasterRCNN:
                                                       rpn_loss=loss_rpn_box_reg.item())
 
         return history
+
+    def parameters(self):
+        """
+
+        Returns:
+        --------
+        dict: A dictionary containing training and validation loss history.
+        """
+        return self.model.parameters()
