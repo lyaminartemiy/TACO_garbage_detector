@@ -83,6 +83,6 @@ def validate_batch(batch, model):
     targets = [{k: v.to(config['DEVICE']) for k, v in t.items()} for t in targets]
 
     losses = model(imgs, targets)
-    loss = sum(loss for loss in losses.values())
+    loss = sum(loss for loss in losses)
 
     return loss, losses
